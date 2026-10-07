@@ -1,0 +1,16 @@
+.bars {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.bar {
+  flex: 1;
+  height: 2px;
+  background: var(--color-stone);
+  transition: background-color 0.4s var(--ease);
+}
+
+.active {
+  background: var(--color-accent);
+}

@@ -1,0 +1,28 @@
+.track {
+  width: 46px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  border: none;
+  padding: 3px;
+  background: var(--color-stone);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease);
+  display: inline-flex;
+}
+
+.thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s var(--ease);
+}
+
+.on {
+  background: var(--color-accent);
+}
+
+.on .thumb {
+  transform: translateX(20px);
+}

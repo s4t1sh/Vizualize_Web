@@ -1,0 +1,81 @@
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  padding: var(--space-lg);
+  transition:
+    border-color 0.25s var(--ease),
+    background-color 0.25s var(--ease);
+}
+
+.empty:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.empty:disabled {
+  cursor: progress;
+}
+
+.dragging {
+  border: 1px dashed var(--color-accent) !important;
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface));
+}
+
+.ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--color-stone);
+  display: grid;
+  place-items: center;
+  color: var(--color-accent);
+  margin-bottom: var(--space-sm);
+}
+
+.title {
+  font-weight: 500;
+}
+
+.dropHint {
+  margin-top: var(--space-sm);
+  opacity: 0.8;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.error {
+  margin-top: var(--space-sm);
+}

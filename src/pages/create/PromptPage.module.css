@@ -1,0 +1,86 @@
+.thumbs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.thumbs figure {
+  margin: 0;
+}
+
+.thumbs img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-xs);
+}
+
+.inputCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  transition: border-color 0.25s var(--ease);
+}
+
+.inputCard:focus-within {
+  border-color: var(--color-accent);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 140px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  background: transparent;
+  line-height: 22px;
+}
+
+.textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.counter {
+  text-align: right;
+}
+
+.suggestTitle {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.chip {
+  border: 1px solid var(--color-stone);
+  border-radius: var(--radius-pill);
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--color-accent);
+}
+
+.chipSelected {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.helper {
+  text-align: center;
+  margin-bottom: var(--space-sm);
+}

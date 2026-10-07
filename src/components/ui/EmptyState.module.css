@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-xxl) var(--space-lg);
+}
+
+.ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--color-stone);
+  display: grid;
+  place-items: center;
+  color: var(--color-accent);
+  margin-bottom: var(--space-lg);
+}
+
+.message {
+  margin-top: var(--space-sm);
+  max-width: 320px;
+}
+
+.action {
+  margin-top: var(--space-lg);
+}
