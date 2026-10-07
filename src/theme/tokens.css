@@ -39,6 +39,13 @@
   color-scheme: light;
 }
 
+/* Large monitors: give pages a little more room. */
+@media (min-width: 1600px) {
+  :root {
+    --content-width: 1280px;
+  }
+}
+
 :root[data-theme='dark'] {
   --color-primary: #f7f5f2;
   --color-secondary: #e7e5e4;

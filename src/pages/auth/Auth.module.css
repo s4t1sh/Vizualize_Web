@@ -16,6 +16,8 @@
   color: var(--color-accent);
   font-weight: 500;
   text-decoration: none;
+  display: inline-block;
+  padding: 12px 2px;
 }
 
 .footer a:hover {
@@ -31,7 +33,7 @@
   margin-top: 0;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 600px) {
   .mobileBrand {
     display: block;
   }

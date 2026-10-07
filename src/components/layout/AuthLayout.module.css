@@ -1,11 +1,13 @@
 .page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .aside {
   min-height: 100vh;
+  min-height: 100dvh;
   position: sticky;
   top: 0;
 }
@@ -13,6 +15,7 @@
 .asideInner {
   height: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -47,9 +50,38 @@
   max-width: 420px;
 }
 
+/* Tablets: the marble panel becomes a banner above the form. */
 @media (max-width: 860px) {
   .page {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .aside {
+    position: relative;
+    min-height: 0;
+  }
+
+  .asideInner {
+    min-height: 0;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .asideTitle {
+    font-size: 34px;
+  }
+
+  .main {
+    align-items: flex-start;
+    padding-top: var(--space-xxl);
+  }
+}
+
+/* Phones: hide the banner so the form is visible straight away. */
+@media (max-width: 600px) {
+  .page {
+    grid-template-rows: 1fr;
   }
 
   .aside {
@@ -57,7 +89,6 @@
   }
 
   .main {
-    align-items: flex-start;
-    padding-top: var(--space-xxl);
+    padding-top: var(--space-xl);
   }
 }

@@ -1,4 +1,5 @@
 .track {
+  position: relative;
   width: 46px;
   height: 26px;
   border-radius: var(--radius-pill);
@@ -8,6 +9,13 @@
   cursor: pointer;
   transition: background-color 0.25s var(--ease);
   display: inline-flex;
+}
+
+/* Invisible larger touch area around the switch (about 50 × 44 px). */
+.track::before {
+  content: '';
+  position: absolute;
+  inset: -9px -2px;
 }
 
 .thumb {

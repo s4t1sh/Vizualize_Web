@@ -9,6 +9,11 @@
   margin-bottom: var(--space-xl);
 }
 
+.identityText {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .avatar {
   width: 72px;
   height: 72px;

@@ -32,7 +32,7 @@ export function ProfilePage() {
         <div className={styles.avatar} aria-hidden="true">
           {getInitials(user?.name ?? '')}
         </div>
-        <div>
+        <div className={styles.identityText}>
           <h2 className="heading">{user?.name}</h2>
           <p className="body muted">{user?.email}</p>
           {user ? <p className="caption muted">Member since {formatMonthYear(user.createdAt)}</p> : null}
