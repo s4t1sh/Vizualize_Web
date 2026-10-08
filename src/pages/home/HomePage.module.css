@@ -37,3 +37,24 @@
   padding: var(--space-xl);
   text-align: center;
 }
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.seeAll {
+  font-size: 14px;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.seeAll:hover {
+  text-decoration: underline;
+}
+
+.recentGrid {
+  margin-top: var(--space-md);
+}

@@ -1,0 +1,32 @@
+/* [ Edit ][ 🗑 ] on one row. */
+.actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: var(--space-xs);
+}
+
+.actions > * {
+  min-height: 44px;
+  padding: 0 var(--space-sm);
+}
+
+.two {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.delete {
+  padding: 0 !important;
+  color: var(--color-error) !important;
+}
+
+.danger {
+  background: var(--color-error) !important;
+  border-color: var(--color-error) !important;
+  color: #ffffff !important;
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}

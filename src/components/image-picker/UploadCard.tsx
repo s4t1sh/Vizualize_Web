@@ -12,13 +12,24 @@ interface UploadCardProps {
   error?: string | null;
   onFile: (file: File) => void;
   onRemove: () => void;
+  /** Label of the remove button; leave empty to hide it. */
+  removeLabel?: string;
 }
 
 /**
  * Large upload area: click to choose a file (on phones this also offers the camera)
  * or drag and drop an image onto it. Shows the preview with Replace / Remove.
  */
-export function UploadCard({ title, hint, imageUrl, busy = false, error, onFile, onRemove }: UploadCardProps) {
+export function UploadCard({
+  title,
+  hint,
+  imageUrl,
+  busy = false,
+  error,
+  onFile,
+  onRemove,
+  removeLabel = 'Remove',
+}: UploadCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -73,9 +84,11 @@ export function UploadCard({ title, hint, imageUrl, busy = false, error, onFile,
             <Button variant="secondary" icon={IoSwapHorizontal} onClick={openPicker} disabled={busy} fullWidth>
               Replace Image
             </Button>
-            <Button variant="ghost" icon={IoTrashOutline} onClick={onRemove} disabled={busy}>
-              Remove
-            </Button>
+            {removeLabel ? (
+              <Button variant="ghost" icon={IoTrashOutline} onClick={onRemove} disabled={busy}>
+                {removeLabel}
+              </Button>
+            ) : null}
           </div>
         </>
       ) : (

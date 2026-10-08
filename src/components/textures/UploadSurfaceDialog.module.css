@@ -1,0 +1,41 @@
+.imageArea {
+  margin-bottom: var(--space-lg);
+}
+
+.priceRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-md);
+}
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-xs);
+  padding: var(--space-md) 0;
+}
+
+.successImage {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.successIcon {
+  color: var(--color-success);
+  margin: calc(-1 * var(--space-lg)) 0 var(--space-sm) 120px;
+  background: var(--color-surface);
+  border-radius: 50%;
+  animation: fade-rise 0.4s var(--ease);
+}
+
+@media (max-width: 380px) {
+  .priceRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

@@ -1,26 +1,66 @@
-.thumbs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.summary {
+  display: flex;
   gap: var(--space-md);
+  align-items: flex-start;
+  padding: var(--space-md);
   margin-bottom: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }
 
-@media (max-width: 360px) {
-  .thumbs {
-    gap: var(--space-sm);
-  }
+.summaryImage {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: var(--radius-md);
 }
 
-.thumbs figure {
+.summaryText {
+  min-width: 0;
+  flex: 1;
+}
+
+.summaryName {
+  font-family: var(--font-display);
+  font-size: 20px;
   margin: 0;
 }
 
-.thumbs img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-xs);
+.spaceChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.spaceChip {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  font-size: 12px;
+}
+
+.edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.edit:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 400px) {
+  .summaryImage {
+    width: 72px;
+    height: 72px;
+  }
 }
 
 .inputCard {

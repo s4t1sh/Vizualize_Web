@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import type { IconType } from 'react-icons';
 import {
   IoAddCircle,
   IoAddCircleOutline,
+  IoCloudUploadOutline,
   IoHome,
   IoHomeOutline,
   IoImages,
@@ -11,9 +13,12 @@ import {
   IoPersonOutline,
 } from 'react-icons/io5';
 import { BrandMark } from '../ui/BrandMark';
+import { UploadSurfaceDialog } from '../textures/UploadSurfaceDialog';
 import styles from './AppLayout.module.css';
 
-const navItems: { to: string; label: string; icon: [IconType, IconType]; end?: boolean }[] = [
+type NavItem = { to: string; label: string; icon: [IconType, IconType]; end?: boolean };
+
+const navItems: NavItem[] = [
   { to: '/', label: 'Home', icon: [IoHome, IoHomeOutline], end: true },
   { to: '/create', label: 'Create', icon: [IoAddCircle, IoAddCircleOutline] },
   { to: '/history', label: 'History', icon: [IoImages, IoImagesOutline] },
@@ -22,6 +27,7 @@ const navItems: { to: string; label: string; icon: [IconType, IconType]; end?: b
 
 /** Signed-in layout: top navigation on wide screens, bottom tab bar on phones. */
 export function AppLayout() {
+  const [uploadOpen, setUploadOpen] = useState(false);
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
@@ -29,18 +35,29 @@ export function AppLayout() {
           <NavLink to="/" aria-label="Vizualizer home" className={styles.brandLink}>
             <BrandMark />
           </NavLink>
-          <nav aria-label="Main" className={styles.topNav}>
-            {navItems.map(({ to, label, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) => `${styles.topLink} ${isActive ? styles.topActive : ''}`}
-              >
-                {label}
-              </NavLink>
-            ))}
-          </nav>
+          <div className={styles.headerRight}>
+            <button
+              type="button"
+              className={styles.uploadButton}
+              onClick={() => setUploadOpen(true)}
+              aria-haspopup="dialog"
+            >
+              <IoCloudUploadOutline size={18} aria-hidden="true" />
+              <span className={styles.uploadLabel}>Upload Surface</span>
+            </button>
+            <nav aria-label="Main" className={styles.topNav}>
+              {navItems.map(({ to, label, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  className={({ isActive }) => `${styles.topLink} ${isActive ? styles.topActive : ''}`}
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
         </div>
       </header>
 
@@ -65,6 +82,8 @@ export function AppLayout() {
           </NavLink>
         ))}
       </nav>
+
+      <UploadSurfaceDialog open={uploadOpen} onClose={() => setUploadOpen(false)} />
     </div>
   );
 }

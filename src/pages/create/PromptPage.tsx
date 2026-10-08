@@ -1,96 +1,114 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router';
+import { Link, Navigate, useNavigate } from 'react-router';
 import { IoSparklesOutline } from 'react-icons/io5';
 import { CreateStepLayout } from '../../components/layout/CreateStepLayout';
 import { Button } from '../../components/buttons/Button';
 import { useGenerationStore } from '../../store/generationStore';
+import { SPACE_LABEL } from '../../constants/spaces';
+import { createGeneration } from '../../services/generationService';
+import { ApiError } from '../../services/api';
 import styles from './PromptPage.module.css';
 
 const MAX_LENGTH = 500;
 
 const suggestions = [
-  'Apply to floor',
-  'Apply to wall',
-  'Apply to both floor and wall',
-  'Keep furniture unchanged',
-  'Make it luxury',
-  'Make it realistic',
+  'Modern luxury villa',
+  'Minimal Scandinavian style',
+  'Classic Indian home',
+  'Warm evening light',
+  'Bright natural daylight',
+  'Photorealistic',
 ];
 
 const PLACEHOLDER =
-  'Apply this marble texture to the floor while keeping the existing furniture, lighting and room structure unchanged. Make the result realistic and premium.';
+  'Optional — e.g. A modern luxury villa with warm evening light, wooden furniture and large windows.';
 
+/** Step 3: optional style description, then generate. */
 export function PromptPage() {
-  const textureImage = useGenerationStore((state) => state.textureImage);
-  const roomImage = useGenerationStore((state) => state.roomImage);
+  const selectedTexture = useGenerationStore((state) => state.selectedTexture);
+  const selectedSpaces = useGenerationStore((state) => state.selectedSpaces);
   const prompt = useGenerationStore((state) => state.prompt);
   const setPrompt = useGenerationStore((state) => state.setPrompt);
-  const [notice, setNotice] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!textureImage) return <Navigate to="/create/surface" replace />;
-  if (!roomImage) return <Navigate to="/create/space" replace />;
+  if (!selectedTexture) return <Navigate to="/create/surface" replace />;
+  if (selectedSpaces.length === 0) return <Navigate to="/create/space" replace />;
 
   const toggleSuggestion = (text: string) => {
     if (prompt.includes(text)) {
       setPrompt(
         prompt
           .replace(text, '')
-          .replace(/\.\s*\./g, '.')
+          .replace(/,\s*,/g, ',')
           .replace(/\s{2,}/g, ' ')
-          .replace(/^[\s.]+/, '')
+          .replace(/^[\s,]+|[\s,]+$/g, '')
           .trim(),
       );
     } else {
-      const base = prompt.trim();
-      const joined = base ? `${base.replace(/\.$/, '')}. ${text}.` : `${text}.`;
-      setPrompt(joined.slice(0, MAX_LENGTH));
+      const base = prompt.trim().replace(/[.,]$/, '');
+      setPrompt((base ? `${base}, ${text}` : text).slice(0, MAX_LENGTH));
     }
   };
 
-  const canCreate = Boolean(prompt.trim());
+  const count = selectedSpaces.length;
+
+  const create = async () => {
+    setCreating(true);
+    setError(null);
+    try {
+      const generation = await createGeneration(selectedTexture.id, prompt.trim());
+      navigate(`/visualizations/${generation.id}`);
+      setPrompt('');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
+      setCreating(false);
+    }
+  };
 
   return (
     <CreateStepLayout
       step={3}
       title="Describe Your Vision"
-      subtitle="How would you like the surface to look?"
+      subtitle="Add a style if you like — or leave it empty and we will create elegant, realistic interiors."
       backTo="/create/space"
       footer={
         <>
-          {notice ? (
-            <p className={`caption muted ${styles.helper}`} role="status">
-              {notice}
+          {error ? (
+            <p className={`caption error-text ${styles.helper}`} role="alert">
+              {error}
             </p>
-          ) : !canCreate ? (
-            <p className={`caption muted ${styles.helper}`}>Add a description to continue.</p>
           ) : null}
-          <Button
-            fullWidth
-            icon={IoSparklesOutline}
-            disabled={!canCreate}
-            onClick={() =>
-              // Phase 2–5 preview: the generation request is connected in Phase 6 (API) and Phase 7 (AI).
-              setNotice('Creating the visualization will be connected once the server and AI steps are added.')
-            }
-          >
-            Create Visualization
+          <Button fullWidth icon={IoSparklesOutline} loading={creating} onClick={() => void create()}>
+            {`Create ${count} Visualization${count === 1 ? '' : 's'}`}
           </Button>
         </>
       }
     >
-      <div className={styles.thumbs}>
-        <figure>
-          <img src={textureImage.previewUrl} alt="Chosen surface" />
-          <figcaption className="caption muted">Surface</figcaption>
-        </figure>
-        <figure>
-          <img src={roomImage.previewUrl} alt="Chosen room" />
-          <figcaption className="caption muted">Space</figcaption>
-        </figure>
+      <div className={styles.summary}>
+        <img src={selectedTexture.thumbnailUrl} alt="" className={styles.summaryImage} />
+        <div className={styles.summaryText}>
+          <p className="overline muted">Surface</p>
+          <p className={styles.summaryName}>{selectedTexture.name}</p>
+          <p className="overline muted" style={{ marginTop: 'var(--space-sm)' }}>
+            Spaces
+          </p>
+          <div className={styles.spaceChips}>
+            {selectedSpaces.map((s) => (
+              <span key={s} className={styles.spaceChip}>
+                {SPACE_LABEL[s]}
+              </span>
+            ))}
+          </div>
+          <Link to="/create/surface" className={styles.edit}>
+            Change surface
+          </Link>
+        </div>
       </div>
 
       <label htmlFor="vision" className="visually-hidden">
-        Describe your vision
+        Describe your vision (optional)
       </label>
       <div className={styles.inputCard}>
         <textarea
@@ -99,7 +117,7 @@ export function PromptPage() {
           onChange={(e) => setPrompt(e.target.value)}
           placeholder={PLACEHOLDER}
           maxLength={MAX_LENGTH}
-          rows={6}
+          rows={5}
           className={styles.textarea}
         />
         <p className={`caption muted ${styles.counter}`}>
@@ -107,7 +125,7 @@ export function PromptPage() {
         </p>
       </div>
 
-      <p className={`overline muted ${styles.suggestTitle}`}>Suggestions</p>
+      <p className={`overline muted ${styles.suggestTitle}`}>Style suggestions</p>
       <div className={styles.chips}>
         {suggestions.map((text) => {
           const selected = prompt.includes(text);

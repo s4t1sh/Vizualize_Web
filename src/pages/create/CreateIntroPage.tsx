@@ -3,9 +3,9 @@ import { ButtonLink } from '../../components/buttons/Button';
 import styles from './CreateIntroPage.module.css';
 
 const steps = [
-  { title: 'Choose Your Surface', body: 'Upload the tile, marble or texture you want to visualize.' },
-  { title: 'Choose Your Space', body: 'Upload a photo of the room, wall or floor you want to transform.' },
-  { title: 'Describe Your Vision', body: 'Tell us how the surface should be applied.' },
+  { title: 'Choose Your Surface', body: 'Pick a tile, marble or stone from our sample library.' },
+  { title: 'Your Spaces', body: 'It is shown in 6 spaces: rooms, floors, stairs and a feature wall.' },
+  { title: 'Describe Your Vision', body: 'Optionally add a style — the AI creates the images.' },
 ];
 
 export function CreateIntroPage() {

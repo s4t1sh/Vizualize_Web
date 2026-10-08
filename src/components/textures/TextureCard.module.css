@@ -1,0 +1,94 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    border-color 0.25s var(--ease),
+    box-shadow 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-soft);
+}
+
+.selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-soft);
+}
+
+.selectButton {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.imageWrap {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--color-border);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+}
+
+.selectButton:hover .image {
+  transform: scale(1.03);
+}
+
+.check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  animation: fade-rise 0.25s var(--ease);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-md);
+}
+
+.category {
+  font-size: 10px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.price {
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-top: var(--space-xs);
+}
+
+.footer {
+  margin-top: auto;
+  padding: 0 var(--space-md) var(--space-md);
+  /* Lets the buttons inside adapt to the card's own width (narrow cards on phones). */
+  container-type: inline-size;
+  container-name: card-footer;
+}

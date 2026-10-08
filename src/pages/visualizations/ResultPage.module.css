@@ -1,0 +1,225 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-bottom: var(--space-md);
+  color: var(--color-muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--color-text);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.sample {
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.headerText {
+  min-width: 0;
+}
+
+.title {
+  margin: var(--space-xs) 0;
+  overflow-wrap: anywhere;
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.bar {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transition: width 0.6s var(--ease);
+}
+
+/* 1 column on phones, 2 on tablets, 3 on wide screens. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-lg);
+}
+
+.tile {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.imageButton,
+.placeholder {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.imageButton {
+  display: block;
+  padding: 0;
+  cursor: zoom-in;
+  transition:
+    box-shadow 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.imageButton:hover {
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: fade-rise 0.4s var(--ease);
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.loading {
+  color: var(--color-accent);
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-background) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+  animation: result-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes result-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.failed {
+  color: var(--color-error);
+}
+
+.failed p {
+  color: var(--color-text);
+  max-width: 280px;
+}
+
+.caption {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-xxl);
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 360px;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.danger {
+  background: var(--color-error) !important;
+  border-color: var(--color-error) !important;
+  color: #ffffff !important;
+}
+
+/* The whole picture fits on screen (no scrolling inside the pop-up). */
+.full {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 58vh;
+  max-height: 58dvh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xxxl) var(--space-lg);
+  text-align: center;
+  color: var(--color-accent);
+}
+
+.stateActions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .header {
+    gap: var(--space-md);
+  }
+
+  .sample {
+    width: 64px;
+    height: 64px;
+  }
+
+  .grid {
+    gap: var(--space-md);
+  }
+
+  .actions > a {
+    flex: 1 1 100%;
+  }
+}

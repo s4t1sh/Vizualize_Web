@@ -1,37 +1,24 @@
 import { create } from 'zustand';
-import type { SelectedImage } from '../types';
+import type { SpaceType, Texture } from '../types';
+import { ALL_SPACES } from '../constants/spaces';
 
 interface GenerationDraftState {
-  textureImage: SelectedImage | null;
-  roomImage: SelectedImage | null;
+  /** Step 1: the surface chosen from the sample library. */
+  selectedTexture: Texture | null;
+  /** Step 2: the scenes to generate with that surface — always all six. */
+  selectedSpaces: SpaceType[];
+  /** Step 3: optional description of the style the user wants. */
   prompt: string;
-  setTextureImage: (image: SelectedImage | null) => void;
-  setRoomImage: (image: SelectedImage | null) => void;
+  setSelectedTexture: (texture: Texture | null) => void;
   setPrompt: (prompt: string) => void;
   resetDraft: () => void;
 }
 
-/** Frees the browser memory used by an image preview. */
-function release(image: SelectedImage | null) {
-  if (image) URL.revokeObjectURL(image.previewUrl);
-}
-
-export const useGenerationStore = create<GenerationDraftState>((set, get) => ({
-  textureImage: null,
-  roomImage: null,
+export const useGenerationStore = create<GenerationDraftState>((set) => ({
+  selectedTexture: null,
+  selectedSpaces: ALL_SPACES,
   prompt: '',
-  setTextureImage: (textureImage) => {
-    release(get().textureImage);
-    set({ textureImage });
-  },
-  setRoomImage: (roomImage) => {
-    release(get().roomImage);
-    set({ roomImage });
-  },
+  setSelectedTexture: (selectedTexture) => set({ selectedTexture }),
   setPrompt: (prompt) => set({ prompt }),
-  resetDraft: () => {
-    release(get().textureImage);
-    release(get().roomImage);
-    set({ textureImage: null, roomImage: null, prompt: '' });
-  },
+  resetDraft: () => set({ selectedTexture: null, selectedSpaces: ALL_SPACES, prompt: '' }),
 }));

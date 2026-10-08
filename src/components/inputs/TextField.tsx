@@ -5,7 +5,7 @@ import styles from './TextField.module.css';
 interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label: string;
   error?: string;
-  type?: 'text' | 'email' | 'password';
+  type?: 'text' | 'email' | 'password' | 'number';
 }
 
 export function TextField({ label, error, type = 'text', id, ...rest }: TextFieldProps) {

@@ -11,11 +11,13 @@ interface CreateStepLayoutProps {
   backTo: string;
   children: ReactNode;
   footer: ReactNode;
+  /** Wider page for grids (e.g. the texture library). */
+  wide?: boolean;
 }
 
-export function CreateStepLayout({ step, title, subtitle, backTo, children, footer }: CreateStepLayoutProps) {
+export function CreateStepLayout({ step, title, subtitle, backTo, children, footer, wide = false }: CreateStepLayoutProps) {
   return (
-    <div className={styles.wrap}>
+    <div className={`${styles.wrap} ${wide ? styles.wide : ''}`}>
       <Link to={backTo} className={styles.back}>
         <IoArrowBack aria-hidden="true" /> Back
       </Link>
@@ -27,7 +29,7 @@ export function CreateStepLayout({ step, title, subtitle, backTo, children, foot
       <div className={`${styles.body} fade-in`} style={{ animationDelay: '120ms' }}>
         {children}
       </div>
-      <div className={styles.footer}>{footer}</div>
+      <div className={`${styles.footer} ${wide ? styles.stickyFooter : ''}`}>{footer}</div>
     </div>
   );
 }

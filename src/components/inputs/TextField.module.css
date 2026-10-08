@@ -48,3 +48,19 @@
 .error {
   margin-top: var(--space-xs);
 }
+
+.select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 28px;
+}
+
+.select option {
+  color: #171717;
+}
+
+.selectIcon {
+  margin-left: -24px;
+  pointer-events: none;
+  color: var(--color-muted);
+}

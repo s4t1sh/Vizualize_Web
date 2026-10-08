@@ -1,14 +1,16 @@
 import type { SelectedImage } from '../types';
 
-/** The same rules as the mobile app, so both send similar images to the server. */
+/**
+ * No size or type limits: any image the browser can open is accepted.
+ * Very large images are only scaled down to 2048 px (to keep uploads fast); small ones are kept as they are.
+ */
 export const IMAGE_RULES = {
-  maxSourceBytes: 30 * 1024 * 1024,
-  minSide: 512,
   maxLongSide: 2048,
   quality: 0.85,
 } as const;
 
-export const ACCEPTED_IMAGE_TYPES = 'image/jpeg,image/png,image/webp,image/heic,image/heif';
+/** Lets the file chooser show every kind of image. */
+export const ACCEPTED_IMAGE_TYPES = 'image/*';
 
 export class ImageValidationError extends Error {
   constructor(message: string) {
@@ -21,9 +23,7 @@ async function decode(file: File): Promise<ImageBitmap> {
   try {
     return await createImageBitmap(file);
   } catch {
-    throw new ImageValidationError(
-      'This image could not be opened in your browser. Please use a JPEG, PNG or WEBP photo.',
-    );
+    throw new ImageValidationError('This file could not be opened as an image in your browser. Please try another photo.');
   }
 }
 
@@ -38,27 +38,14 @@ function canvasToJpeg(canvas: HTMLCanvasElement): Promise<Blob> {
 }
 
 /**
- * Checks a chosen file and prepares it for upload: it must be an image under 30 MB
- * and at least 512 px on its shorter side. Large images are scaled down to 2048 px
- * and saved as JPEG (85% quality), all inside the browser.
+ * Prepares any chosen image for upload (no minimum size, no maximum size, any format the
+ * browser can open). Images larger than 2048 px are scaled down; everything is saved as
+ * JPEG (85% quality), all inside the browser.
  */
 export async function prepareImage(file: File): Promise<SelectedImage> {
-  if (file.type && !file.type.startsWith('image/')) {
-    throw new ImageValidationError('Please choose a photo (JPEG, PNG or WEBP).');
-  }
-  if (file.size > IMAGE_RULES.maxSourceBytes) {
-    throw new ImageValidationError('This image is too large. Please choose a photo under 30 MB.');
-  }
-
   const bitmap = await decode(file);
   try {
     const { width, height } = bitmap;
-    if (Math.min(width, height) < IMAGE_RULES.minSide) {
-      throw new ImageValidationError(
-        `This image is too small. Please use a photo at least ${IMAGE_RULES.minSide} pixels wide and tall.`,
-      );
-    }
-
     const scale = Math.min(1, IMAGE_RULES.maxLongSide / Math.max(width, height));
     const outWidth = Math.round(width * scale);
     const outHeight = Math.round(height * scale);
@@ -79,6 +66,27 @@ export async function prepareImage(file: File): Promise<SelectedImage> {
     const prepared = new File([blob], `${baseName}.jpg`, { type: 'image/jpeg' });
 
     return { file: prepared, previewUrl: URL.createObjectURL(prepared), width: outWidth, height: outHeight };
+  } finally {
+    bitmap.close();
+  }
+}
+
+/** Small preview (640 px) used for gallery cards so the library loads quickly. */
+export async function makeThumbnail(file: File, maxSide = 640): Promise<File> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Canvas not available');
+    context.fillStyle = '#FFFFFF';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.imageSmoothingQuality = 'high';
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await canvasToJpeg(canvas);
+    return new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
   } finally {
     bitmap.close();
   }

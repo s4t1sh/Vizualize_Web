@@ -70,3 +70,8 @@
 .ghost:hover:not(:disabled) {
   background: var(--color-border);
 }
+
+/* Icons keep their size even when a button is narrow. */
+.button svg {
+  flex-shrink: 0;
+}
