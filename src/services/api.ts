@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '../constants/config';
+import { API_URL, API_URL_MISSING_MESSAGE } from '../constants/config';
 
 export interface ApiSuccess<T> {
   success: true;
@@ -44,6 +44,8 @@ export function configureApi(options: { getToken: () => string | null; onUnautho
 }
 
 api.interceptors.request.use((config) => {
+  // No server address in .env: stop here with a clear message.
+  if (!API_URL) throw new ApiError(API_URL_MISSING_MESSAGE, 'API_URL_MISSING');
   const token = getToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
