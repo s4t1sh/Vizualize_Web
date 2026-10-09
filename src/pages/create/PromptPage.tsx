@@ -58,7 +58,7 @@ export function PromptPage() {
     setCreating(true);
     setError(null);
     try {
-      const generation = await createGeneration(selectedTexture.id, prompt.trim());
+      const generation = await createGeneration(selectedTexture.id, prompt.trim(), selectedSpaces);
       navigate(`/visualizations/${generation.id}`);
       setPrompt('');
     } catch (err) {
@@ -101,8 +101,8 @@ export function PromptPage() {
               </span>
             ))}
           </div>
-          <Link to="/create/surface" className={styles.edit}>
-            Change surface
+          <Link to="/create/space" className={styles.edit}>
+            Change spaces
           </Link>
         </div>
       </div>

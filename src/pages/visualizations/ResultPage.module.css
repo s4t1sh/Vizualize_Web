@@ -223,3 +223,92 @@
     flex: 1 1 100%;
   }
 }
+
+/* One "Try Again" for all failed pictures. */
+.retryBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.retryBar p {
+  flex: 1 1 220px;
+}
+
+.retryIcon {
+  color: var(--color-error);
+  flex-shrink: 0;
+}
+
+/* Large viewer: picture with ‹ › buttons on its sides, dots underneath. */
+.viewer {
+  position: relative;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  display: grid;
+  place-items: center;
+  background: rgba(23, 23, 23, 0.6);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.navButton:hover {
+  background: rgba(23, 23, 23, 0.85);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.prev {
+  left: var(--space-sm);
+}
+
+.next {
+  right: var(--space-sm);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: var(--space-sm);
+}
+
+/* Each dot has a 32 px tap area; the visible dot is smaller. */
+.dot {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-stone);
+  transition: background-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.dotActive::after {
+  background: var(--color-accent);
+  transform: scale(1.3);
+}

@@ -1,0 +1,75 @@
+/* Search box above the History list. */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: 520px;
+  min-height: 48px;
+  margin-bottom: var(--space-lg);
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.search:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 15px;
+}
+
+/* The whole box shows the focus ring instead. */
+.searchInput:focus-visible {
+  outline: none;
+}
+
+/* Hide the browser's own clear (×) — we show our own. */
+.searchInput::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.clear:hover {
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .search {
+    max-width: none;
+  }
+}

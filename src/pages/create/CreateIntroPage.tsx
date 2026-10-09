@@ -4,7 +4,7 @@ import styles from './CreateIntroPage.module.css';
 
 const steps = [
   { title: 'Choose Your Surface', body: 'Pick a tile, marble or stone from our sample library.' },
-  { title: 'Your Spaces', body: 'It is shown in 6 spaces: rooms, floors, stairs and a feature wall.' },
+  { title: 'Choose Your Spaces', body: 'All 6 rooms, floors, stairs and walls are chosen — remove any you don’t need.' },
   { title: 'Describe Your Vision', body: 'Optionally add a style — the AI creates the images.' },
 ];
 

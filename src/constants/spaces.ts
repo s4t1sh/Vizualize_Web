@@ -10,7 +10,7 @@ export const SPACES: { value: SpaceType; label: string; description: string }[] 
   { value: 'feature_wall', label: 'Feature Wall', description: 'A statement wall clad in the sample' },
 ];
 
-/** Every visualization creates all six spaces (one image each). */
+/** All six spaces — chosen by default in Step 2 (each becomes one image). */
 export const ALL_SPACES: SpaceType[] = SPACES.map((s) => s.value);
 
 export const SPACE_LABEL: Record<SpaceType, string> = Object.fromEntries(

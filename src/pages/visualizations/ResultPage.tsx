@@ -4,6 +4,8 @@ import {
   IoAdd,
   IoAlertCircleOutline,
   IoArrowBack,
+  IoChevronBack,
+  IoChevronForward,
   IoDownloadOutline,
   IoRefresh,
   IoTrashOutline,
@@ -11,7 +13,7 @@ import {
 import { Button, ButtonLink } from '../../components/buttons/Button';
 import { Modal } from '../../components/ui/Modal';
 import { FormMessage } from '../../components/ui/FormMessage';
-import { deleteGeneration, getGeneration, retryGenerationImage } from '../../services/generationService';
+import { deleteGeneration, getGeneration, retryFailedPictures } from '../../services/generationService';
 import { ApiError } from '../../services/api';
 import { SPACE_LABEL } from '../../constants/spaces';
 import { countImages, downloadPicture, formatDate, pictureFileName } from '../../utils/generation';
@@ -30,13 +32,33 @@ export function ResultPage() {
   const [generation, setGeneration] = useState<Generation | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [viewing, setViewing] = useState<GenerationImage | null>(null);
-  const [retryingId, setRetryingId] = useState<string | null>(null);
+  // Which finished picture is open in the large viewer (null = closed).
+  const [viewIndex, setViewIndex] = useState<number | null>(null);
+  const [retrying, setRetrying] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const waiting = generation ? countImages(generation).waiting : 0;
+  const ready = generation ? generation.images.filter((img) => img.status === 'completed' && img.imageUrl) : [];
+  const viewing = viewIndex !== null ? (ready[viewIndex] ?? null) : null;
+
+  /** Next / previous picture in the large viewer (wraps around at the ends). */
+  const step = useCallback(
+    (by: number) => setViewIndex((i) => (i === null || ready.length === 0 ? i : (i + by + ready.length) % ready.length)),
+    [ready.length],
+  );
+
+  // Keyboard ← → arrows move between pictures while the viewer is open.
+  useEffect(() => {
+    if (viewIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'ArrowLeft') step(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [viewIndex, step]);
 
   const load = useCallback(async () => {
     try {
@@ -65,15 +87,16 @@ export function ResultPage() {
     return () => clearTimeout(timer);
   }, [generation, waiting, load]);
 
-  const retry = async (image: GenerationImage) => {
-    setRetryingId(image.id);
+  /** One button: creates all failed pictures again, at the same time. */
+  const retryAll = async () => {
+    setRetrying(true);
     setActionError(null);
     try {
-      setGeneration(await retryGenerationImage(id, image.id));
+      setGeneration(await retryFailedPictures(id));
     } catch (err) {
       setActionError(messageOf(err));
     } finally {
-      setRetryingId(null);
+      setRetrying(false);
     }
   };
 
@@ -126,7 +149,7 @@ export function ResultPage() {
     );
   }
 
-  const { done, total } = countImages(generation);
+  const { done, total, failed } = countImages(generation);
 
   return (
     <>
@@ -161,18 +184,35 @@ export function ResultPage() {
         </div>
       ) : null}
 
+      {failed > 0 && waiting === 0 ? (
+        <div className={styles.retryBar} role="status">
+          <IoAlertCircleOutline size={22} aria-hidden="true" className={styles.retryIcon} />
+          <p className="body">
+            {failed === total
+              ? `None of the ${total} pictures could be created.`
+              : `${failed} of ${total} pictures could not be created.`}
+          </p>
+          {generation.isMine ? (
+            <Button icon={IoRefresh} loading={retrying} onClick={() => void retryAll()}>
+              {failed === 1 ? 'Try Again' : `Try Again (${failed} pictures)`}
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
+
       <FormMessage message={actionError} />
 
       <div className={styles.grid}>
         {generation.images.map((image) => {
           const label = SPACE_LABEL[image.space];
+          const readyIndex = ready.indexOf(image);
           return (
             <figure key={image.id} className={styles.tile}>
               {image.status === 'completed' && image.imageUrl ? (
                 <button
                   type="button"
                   className={styles.imageButton}
-                  onClick={() => setViewing(image)}
+                  onClick={() => setViewIndex(readyIndex)}
                   aria-label={`View ${label} full size`}
                 >
                   <img src={image.imageUrl} alt={`${generation.textureName} — ${label}`} className={styles.image} />
@@ -181,16 +221,6 @@ export function ResultPage() {
                 <div className={`${styles.placeholder} ${styles.failed}`}>
                   <IoAlertCircleOutline size={26} aria-hidden="true" />
                   <p className="caption">{image.errorMessage ?? 'This picture could not be created.'}</p>
-                  {generation.isMine ? (
-                    <Button
-                      variant="secondary"
-                      icon={IoRefresh}
-                      loading={retryingId === image.id}
-                      onClick={() => void retry(image)}
-                    >
-                      Try Again
-                    </Button>
-                  ) : null}
                 </div>
               ) : (
                 <div className={`${styles.placeholder} ${styles.loading}`}>
@@ -229,14 +259,14 @@ export function ResultPage() {
       </div>
 
       <Modal
-        open={Boolean(viewing)}
-        onClose={() => setViewing(null)}
+        open={viewing !== null}
+        onClose={() => setViewIndex(null)}
         title={viewing ? SPACE_LABEL[viewing.space] : ''}
-        subtitle={generation.textureName}
+        subtitle={viewIndex !== null ? `${generation.textureName} · ${viewIndex + 1} of ${ready.length}` : ''}
         size="large"
         footer={
           <>
-            <Button variant="secondary" onClick={() => setViewing(null)}>
+            <Button variant="secondary" onClick={() => setViewIndex(null)}>
               Close
             </Button>
             <Button icon={IoDownloadOutline} loading={downloading} onClick={() => viewing && void download(viewing)}>
@@ -246,7 +276,50 @@ export function ResultPage() {
         }
       >
         {viewing?.imageUrl ? (
-          <img src={viewing.imageUrl} alt={`${generation.textureName} — ${SPACE_LABEL[viewing.space]}`} className={styles.full} />
+          <div className={styles.viewer}>
+            <img
+              key={viewing.id}
+              src={viewing.imageUrl}
+              alt={`${generation.textureName} — ${SPACE_LABEL[viewing.space]}`}
+              className={styles.full}
+            />
+            {ready.length > 1 ? (
+              <>
+                <button
+                  type="button"
+                  className={`${styles.navButton} ${styles.prev}`}
+                  onClick={() => step(-1)}
+                  aria-label="Previous space"
+                >
+                  <IoChevronBack size={24} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.navButton} ${styles.next}`}
+                  onClick={() => step(1)}
+                  aria-label="Next space"
+                >
+                  <IoChevronForward size={24} aria-hidden="true" />
+                </button>
+              </>
+            ) : null}
+          </div>
+        ) : null}
+        {ready.length > 1 ? (
+          <div className={styles.dots} role="tablist" aria-label="Spaces">
+            {ready.map((img, i) => (
+              <button
+                key={img.id}
+                type="button"
+                role="tab"
+                aria-selected={i === viewIndex}
+                aria-label={SPACE_LABEL[img.space]}
+                title={SPACE_LABEL[img.space]}
+                className={`${styles.dot} ${i === viewIndex ? styles.dotActive : ''}`}
+                onClick={() => setViewIndex(i)}
+              />
+            ))}
+          </div>
         ) : null}
       </Modal>
     </>

@@ -1,11 +1,11 @@
 import { api, type ApiSuccess } from './api';
-import type { Generation } from '../types';
+import type { Generation, SpaceType } from '../types';
 
 type One = ApiSuccess<{ generation: Generation }>;
 
 /** Starts a visualization (six AI pictures are then created on the server). */
-export async function createGeneration(textureId: string, prompt: string): Promise<Generation> {
-  const res = await api.post<One>('/generations', { textureId, prompt });
+export async function createGeneration(textureId: string, prompt: string, spaces: SpaceType[]): Promise<Generation> {
+  const res = await api.post<One>('/generations', { textureId, prompt, spaces });
   return res.data.data.generation;
 }
 
@@ -19,8 +19,9 @@ export async function getGeneration(id: string): Promise<Generation> {
   return res.data.data.generation;
 }
 
-export async function retryGenerationImage(id: string, imageId: string): Promise<Generation> {
-  const res = await api.post<One>(`/generations/${id}/images/${imageId}/retry`);
+/** Creates again every picture of this visualization that failed (all at once). */
+export async function retryFailedPictures(id: string): Promise<Generation> {
+  const res = await api.post<One>(`/generations/${id}/retry`);
   return res.data.data.generation;
 }
 
